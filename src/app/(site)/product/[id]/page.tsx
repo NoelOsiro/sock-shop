@@ -9,8 +9,39 @@ import { Label } from '@/components/ui/label'
 import { products } from '@/data/products'
 import { useCart } from '@/contexts/CatrContext'
 import { useToast } from "@/components/ui/use-toast"
+import { client } from '@/sanity/lib/client'
 
 
+// Fetch content with GROQ
+async function getContent() {
+  const CONTENT_QUERY = `*[_type == "product"] {
+  ...,
+  mainImage {
+    ...,
+    asset->
+  },
+  variants[] {
+    variant {
+      ...
+    }
+  },
+  tags[],
+  productCategory->,
+  content[] {
+    _type,
+    ...,
+    defined(string) => string
+  }
+}
+`
+  const content = await client.fetch(CONTENT_QUERY)
+  return content
+}
+
+// Log content to console
+getContent().then(content => console.log(content))
+
+// Insert the return component calling `getContent()` below
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const product = products.find(p => p.id === parseInt(params.id))
