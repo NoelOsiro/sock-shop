@@ -116,6 +116,7 @@ const productSchema = {
         title: 'Sale Price',
         type: 'number',
         hidden: ({ document }: { document: any }) => !document?.isOnSale,
+        description: 'The discounted price of the product (if on sale)',
       },
     ],
   };

@@ -12,6 +12,7 @@ interface Product {
   title: string
   slug: { current: string }
   price: number
+  salePrice?: number
   imageUrl: string
 }
 
@@ -32,6 +33,16 @@ async function getFeaturedProducts(): Promise<Product[]> {
     "imageUrl": images[0].asset->url
   }`)
 }
+async function getSaleProducts(): Promise<Product[]> {
+  return await client.fetch(`*[_type == "product" && defined(salePrice)][0...4]{
+    _id,
+    name,
+    slug,
+    price,
+    salePrice,
+    "imageUrl": images[0].asset->url
+  }`)
+}
 
 async function getCarouselItems(): Promise<CarouselItem[]> {
   return await client.fetch(`*[_type == "carouselItem"]{
@@ -46,6 +57,8 @@ async function getCarouselItems(): Promise<CarouselItem[]> {
 export default async function Home() {
   const featuredProducts = await getFeaturedProducts()
   const carouselItems = await getCarouselItems()
+  const saleProducts = await getSaleProducts()
+
   return (
     <div className="space-y-12">
       {/* Hero Carousel */}
@@ -54,9 +67,9 @@ export default async function Home() {
           {carouselItems.map((item) => (
             <CarouselItem key={item._id}>
               <div className="relative h-[400px] md:h-[500px]">
-                <Image 
-                  src={urlFor(item.imageUrl).width(1000).height(500).url()} 
-                  alt={item.title} 
+                <Image
+                  src={urlFor(item.imageUrl).width(1000).height(500).url()}
+                  alt={item.title}
                   className="w-full h-full object-cover rounded-lg"
                   fill
                 />
@@ -74,7 +87,44 @@ export default async function Home() {
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-
+      {/* Sales Section */}
+      <section className="bg-red-50 dark:bg-red-900 py-12 px-4 rounded-lg">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6 text-center">Hot Deals</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {saleProducts.map((product) => (
+              <Link href={`/product/${product.slug.current}`} key={product._id} className="group">
+                <Card className="overflow-hidden">
+                  <CardContent className="p-4">
+                    <div className="aspect-square mb-4 overflow-hidden rounded-lg relative">
+                      <Image
+                        src={urlFor(product.imageUrl).width(300).height(300).url()}
+                        alt={product.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        width={300}
+                        height={300}
+                      />
+                      <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-sm font-bold">
+                        {Math.round((1 - (product.salePrice || 0) / product.price) * 100)}% OFF
+                      </div>
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors duration-300">{product.title}</h3>
+                    <div className="flex justify-between items-center">
+                      <p className="text-muted-foreground line-through">Ksh {product.price.toFixed(2)}</p>
+                      <p className="text-red-500 font-bold">Ksh {product.salePrice?.toFixed(2)}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link href="/sale">
+              <Button variant="secondary" size="lg">View All Deals</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
       {/* Featured Categories */}
       <section>
         <h2 className="text-3xl font-bold mb-6 text-center">Shop by Category</h2>
@@ -84,9 +134,9 @@ export default async function Home() {
               <Card className="overflow-hidden">
                 <CardContent className="p-0">
                   <div className="relative h-[200px]">
-                    <Image 
-                      src={`/images/socks/${category}.jpeg`} 
-                      alt={`${category}'s Socks`} 
+                    <Image
+                      src={`/images/socks/${category}.jpeg`}
+                      alt={`${category}'s Socks`}
                       className="w-full h-full object-contain"
                       fill
                     />
@@ -115,9 +165,9 @@ export default async function Home() {
               <Card className="overflow-hidden">
                 <CardContent className="p-4">
                   <div className="aspect-square mb-4 overflow-hidden rounded-lg">
-                    <Image 
-                      src={urlFor(product.imageUrl).width(300).height(300).url()} 
-                      alt={product.title} 
+                    <Image
+                      src={urlFor(product.imageUrl).width(300).height(300).url()}
+                      alt={product.title}
                       className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                       width={300}
                       height={300}
@@ -138,9 +188,9 @@ export default async function Home() {
           <h2 className="text-3xl font-bold mb-4">Join Our Newsletter</h2>
           <p className="mb-6">Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.</p>
           <form className="flex flex-col sm:flex-row gap-4">
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
+            <input
+              type="email"
+              placeholder="Enter your email"
               className="flex-grow px-4 py-2 rounded-md text-foreground"
               required
             />
@@ -151,3 +201,4 @@ export default async function Home() {
     </div>
   )
 }
+export const revalidate = 10;
