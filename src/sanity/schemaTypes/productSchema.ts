@@ -104,6 +104,7 @@ const productSchema = {
         name: 'isFeatured',
         title: 'Featured Product',
         type: 'boolean',
+        description: 'Set to true to feature this product on the home page'
       },
       {
         name: 'isOnSale',
