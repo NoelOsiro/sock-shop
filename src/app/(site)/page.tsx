@@ -6,6 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { ArrowRight } from 'lucide-react'
 import { client, urlFor } from '@/sanity/lib/client'
 import Image from 'next/image'
+import { AutoplayCarousel } from '@/components/AutoplayCarousel'
 
 interface Product {
   _id: string
@@ -60,33 +61,29 @@ export default async function Home() {
   const saleProducts = await getSaleProducts()
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 lg:space-y-24">
       {/* Hero Carousel */}
-      <Carousel className="w-full max-w-5xl mx-auto">
-        <CarouselContent>
-          {carouselItems.map((item) => (
-            <CarouselItem key={item._id}>
-              <div className="relative h-[400px] md:h-[500px]">
-                <Image
-                  src={urlFor(item.imageUrl).width(1000).height(500).url()}
-                  alt={item.title}
-                  className="w-full h-full object-cover rounded-lg"
-                  fill
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-start p-8 text-white">
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4">{item.title}</h2>
-                  <p className="text-lg mb-6">{item.description}</p>
-                  <Link href={item.linkUrl}>
-                    <Button size="lg" variant="secondary">Shop Now</Button>
-                  </Link>
-                </div>
+      <AutoplayCarousel interval={5000}>
+        {carouselItems.map((item) => (
+          <CarouselItem key={item._id}>
+            <div className="relative h-[400px] md:h-[600px] lg:h-[800px]">
+              <Image 
+                src={urlFor(item.imageUrl).width(1920).height(1080).url()} 
+                alt={item.title} 
+                className="w-full h-full object-cover rounded-lg"
+                fill
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-start p-8 md:p-16 lg:p-24">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">{item.title}</h2>
+                <p className="text-lg md:text-xl lg:text-2xl mb-6 text-white max-w-2xl">{item.description}</p>
+                <Link href={item.linkUrl}>
+                  <Button size="lg" variant="secondary">Shop Now</Button>
+                </Link>
               </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+            </div>
+          </CarouselItem>
+        ))}
+      </AutoplayCarousel>
       {/* Sales Section */}
       <section className="bg-red-50 dark:bg-red-900 py-12 px-4 rounded-lg">
         <div className="max-w-6xl mx-auto">
@@ -133,7 +130,7 @@ export default async function Home() {
             <Link href={`/${category.toLowerCase()}`} key={category} className="group">
               <Card className="overflow-hidden">
                 <CardContent className="p-0">
-                  <div className="relative h-[200px]">
+                  <div className="relative h-[200px] lg:h-[300px]">
                     <Image
                       src={`/images/socks/${category}.jpeg`}
                       alt={`${category}'s Socks`}
@@ -181,7 +178,7 @@ export default async function Home() {
           ))}
         </div>
       </section>
-
+      
       {/* Newsletter Signup */}
       <section className="bg-primary text-primary-foreground py-12 px-4 rounded-lg">
         <div className="max-w-2xl mx-auto text-center">
