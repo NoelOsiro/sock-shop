@@ -1,0 +1,134 @@
+// import React from 'react'
+// import { render, screen } from '@testing-library/react'
+// import Home from '@/app/(site)/page'
+// import { getFeaturedProducts, getCarouselItems, getSaleProducts } from '@/lib/api'
+
+// // Mock the Next.js Image component
+// jest.mock('next/image', () => ({
+//   __esModule: true,
+//   default: (props: any) => {
+//     return <img {...props} />
+//   },
+// }))
+
+// // Mock the Next.js Link component
+// jest.mock('next/link', () => ({
+//   __esModule: true,
+//   default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+//     <a href={href}>{children}</a>
+//   ),
+// }))
+
+// // Mock the API functions
+// jest.mock('../lib/api', () => ({
+//   getFeaturedProducts: jest.fn(),
+//   getCarouselItems: jest.fn(),
+//   getSaleProducts: jest.fn(),
+// }));
+// // Mock the AutoplayCarousel component
+// jest.mock('../components/AutoplayCarousel', () => ({
+//   AutoplayCarousel: ({ children }: { children: React.ReactNode }) => <div data-testid="autoplay-carousel">{children}</div>,
+// }))
+
+// describe('Home page', () => {
+//   const mockFeaturedProducts = [
+//     { _id: '1', title: 'Product 1', slug: { current: 'product-1' }, price: 100, salePrice: 90, imageUrl: 'image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg' },
+//     { _id: '2', title: 'Product 2', slug: { current: 'product-2' }, price: 150, imageUrl: 'image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg' },
+//   ]
+
+//   const mockCarouselItems = [
+//     { _id: 'carousel1', title: 'Slide 1', description: 'Description 1', imageUrl: 'image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg', linkUrl: '/shop' },
+//     { _id: 'carousel2', title: 'Slide 2', description: 'Description 2', imageUrl: 'image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg', linkUrl: '/shop' },
+//   ]
+
+//   const mockSaleProducts = [
+//     { _id: 'sale1', title: 'Sale Product 1', slug: { current: 'sale-product-1' }, price: 100, salePrice: 80, imageUrl: 'image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg' },
+//     { _id: 'sale2', title: 'Sale Product 2', slug: { current: 'sale-product-2' }, price: 200, salePrice: 150, imageUrl: 'image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg' },
+//   ]
+
+//   beforeEach(() => {
+//     (getFeaturedProducts as jest.Mock).mockImplementation(() => Promise.resolve(mockFeaturedProducts));
+//     (getCarouselItems as jest.Mock).mockImplementation(() => Promise.resolve(mockCarouselItems));
+//     (getSaleProducts as jest.Mock).mockImplementation(() => Promise.resolve(mockSaleProducts));
+//   })
+
+//   it('renders the Hero Carousel', async () => {
+
+//     render(await Home())
+
+//     const carousel = screen.getByTestId('autoplay-carousel')
+//     expect(carousel).toBeInTheDocument()
+
+//     // const heroSlide1 = screen.getByText('Slide 1')
+//     // const heroSlide2 = screen.getByText('Slide 2')
+
+//     // expect(heroSlide1).toBeInTheDocument()
+//     // expect(heroSlide2).toBeInTheDocument()
+//   })
+
+//   it('renders the Hot Deals section with sale products', async () => {
+//     render(await Home())
+
+//     const hotDealsHeading = screen.getByText('Hot Deals')
+//     expect(hotDealsHeading).toBeInTheDocument()
+
+//     const saleProduct1 = screen.getByText('Sale Product 1')
+//     const saleProduct2 = screen.getByText('Sale Product 2')
+
+//     expect(saleProduct1).toBeInTheDocument()
+//     expect(saleProduct2).toBeInTheDocument()
+
+//     const salePrice1 = screen.getByText('Ksh 80.00')
+//     const salePrice2 = screen.getByText('Ksh 150.00')
+
+//     expect(salePrice1).toBeInTheDocument()
+//     expect(salePrice2).toBeInTheDocument()
+//   })
+
+//   it('renders the Featured Products section', async () => {
+//     render(await Home())
+
+//     const featuredProductsHeading = screen.getByText('Featured Products')
+//     expect(featuredProductsHeading).toBeInTheDocument()
+
+//     const product1 = screen.getByText('Product 1')
+//     const product2 = screen.getByText('Product 2')
+
+//     expect(product1).toBeInTheDocument()
+//     expect(product2).toBeInTheDocument()
+
+//     const price1 = screen.getByText('Ksh 100.00')
+//     const price2 = screen.getByText('Ksh 150.00')
+
+//     expect(price1).toBeInTheDocument()
+//     expect(price2).toBeInTheDocument()
+//   })
+
+//   it('renders the Shop by Category section', async () => {
+//     render(await Home())
+
+//     const categoryHeading = screen.getByText('Shop by Category')
+//     expect(categoryHeading).toBeInTheDocument()
+
+//     const menCategory = screen.getByText("Men's Socks")
+//     const womenCategory = screen.getByText("Women's Socks")
+//     const childrenCategory = screen.getByText("Children's Socks")
+
+//     expect(menCategory).toBeInTheDocument()
+//     expect(womenCategory).toBeInTheDocument()
+//     expect(childrenCategory).toBeInTheDocument()
+//   })
+
+//   it('renders the Newsletter Signup section', async () => {
+//     render(await Home())
+
+//     const newsletterHeading = screen.getByText('Join Our Newsletter')
+//     expect(newsletterHeading).toBeInTheDocument()
+
+//     const emailInput = screen.getByPlaceholderText('Enter your email')
+//     expect(emailInput).toBeInTheDocument()
+
+//     const subscribeButton = screen.getByText('Subscribe')
+//     expect(subscribeButton).toBeInTheDocument()
+//   })
+// })

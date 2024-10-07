@@ -1,10 +1,10 @@
 "use client"
 
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCart } from "@/contexts/CatrContext"
 import Link from "next/link"
+import { motion } from "framer-motion"
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart()
@@ -19,8 +19,15 @@ export default function CartPage() {
       ) : (
         <>
           <div className="space-y-4">
-            {cart.map((item) => (
-              <div key={`${item.id}-${item.size}-${item.color}`} className="flex items-center justify-between border-b pb-4">
+            {cart.map((item, index) => (
+              <motion.div
+                key={`${item.id}-${item.size}-${item.color}`}
+                className="flex items-center justify-between border-b pb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }} // Staggered entrance animation
+              >
                 <div>
                   <h2 className="font-semibold">{item.name}</h2>
                   <p className="text-sm text-muted-foreground">Size: {item.size}, Color: {item.color}</p>
@@ -38,7 +45,7 @@ export default function CartPage() {
                     Remove
                   </Button>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
           <div className="mt-6 flex justify-between items-center">
@@ -46,7 +53,9 @@ export default function CartPage() {
             <p className="text-xl font-bold">Total: ${total.toFixed(2)}</p>
           </div>
           <div className="mt-6">
-            <Button className="w-full">Proceed to Checkout</Button>
+            <Link href="/checkout">
+              <Button className="w-full">Proceed to Checkout</Button>
+            </Link>
           </div>
         </>
       )}

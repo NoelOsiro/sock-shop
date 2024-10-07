@@ -1,17 +1,19 @@
 "use client"
 
-import React, { useState } from 'react'
-import { Checkbox } from "./ui/checkbox"
+import React, { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-
+import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Slider } from './ui/slider'
 
 interface FilterOption {
   id: string
@@ -32,53 +34,84 @@ interface FilterSection {
 
 interface ProductFilterProps {
   filterSections: FilterSection[]
-  onFilterChange: (filters: Record<string, any>) => void
 }
 
-export function ProductFilter({ filterSections, onFilterChange }: ProductFilterProps) {
+export function ProductFilter({ filterSections }: ProductFilterProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [filters, setFilters] = useState<Record<string, any>>({})
 
-  const handleCheckboxChange = (sectionId: string, optionId: string) => {
-    setFilters(prev => {
-      const updatedFilters = { ...prev }
-      if (!updatedFilters[sectionId]) {
-        updatedFilters[sectionId] = []
-      }
-      const index = updatedFilters[sectionId].indexOf(optionId)
-      if (index > -1) {
-        updatedFilters[sectionId].splice(index, 1)
+  useEffect(() => {
+    const initialFilters: Record<string, any> = {}
+    filterSections.forEach(section => {
+      if (section.type === 'range') {
+        const rangeValue = searchParams.get(section.id)
+        if (rangeValue) {
+          initialFilters[section.id] = rangeValue.split(',').map(Number)
+        }
       } else {
-        updatedFilters[sectionId].push(optionId)
+        const value = searchParams.get(section.id)
+        if (value) {
+          initialFilters[section.id] = value.split(',')
+        }
       }
-      return updatedFilters
     })
+    setFilters(initialFilters)
+  }, [searchParams, filterSections])
+
+  const updateFilters = (newFilters: Record<string, any>) => {
+    const params = new URLSearchParams(searchParams.toString())
+    Object.entries(newFilters).forEach(([key, value]) => {
+      if (Array.isArray(value) && value.length > 0) {
+        params.set(key, value.join(','))
+      } else if (typeof value === 'string') {
+        params.set(key, value)
+      } else {
+        params.delete(key)
+      }
+    })
+    router.push(`?${params.toString()}`)
+  }
+
+  const handleCheckboxChange = (sectionId: string, optionId: string) => {
+    const newFilters = { ...filters }
+    if (!newFilters[sectionId]) {
+      newFilters[sectionId] = []
+    }
+    const index = newFilters[sectionId].indexOf(optionId)
+    if (index > -1) {
+      newFilters[sectionId].splice(index, 1)
+    } else {
+      newFilters[sectionId].push(optionId)
+    }
+    if (newFilters[sectionId].length === 0) {
+      delete newFilters[sectionId]
+    }
+    updateFilters(newFilters)
   }
 
   const handleRadioChange = (sectionId: string, optionId: string) => {
-    setFilters(prev => ({
-      ...prev,
-      [sectionId]: optionId
-    }))
+    updateFilters({ ...filters, [sectionId]: optionId })
   }
 
   const handleRangeChange = (sectionId: string, value: number[]) => {
-    setFilters(prev => ({
-      ...prev,
-      [sectionId]: value
-    }))
-  }
-
-  const applyFilters = () => {
-    onFilterChange(filters)
+    updateFilters({ ...filters, [sectionId]: value })
   }
 
   const clearFilters = () => {
-    setFilters({})
-    onFilterChange({})
+    const params = new URLSearchParams()
+    router.push(`?${params.toString()}`)
   }
+  
+
 
   return (
-    <div className="w-full max-w-xs">
+    <motion.div
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5 }}
+      className="w-full max-w-xs bg-white dark:text-black p-4 rounded-lg shadow-lg space-y-4"
+    >
       <Accordion type="multiple" className="w-full">
         {filterSections.map((section) => (
           <AccordionItem value={section.id} key={section.id}>
@@ -87,37 +120,42 @@ export function ProductFilter({ filterSections, onFilterChange }: ProductFilterP
               {section.type === 'checkbox' && section.options && (
                 <div className="space-y-2">
                   {section.options.map((option) => (
-                    <div className="flex items-center space-x-2" key={option.id}>
+                    <motion.div
+                      key={option.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex items-center space-x-2"
+                    >
                       <Checkbox
                         id={`${section.id}-${option.id}`}
                         checked={(filters[section.id] || []).includes(option.id)}
                         onCheckedChange={() => handleCheckboxChange(section.id, option.id)}
                       />
                       <Label htmlFor={`${section.id}-${option.id}`}>{option.label}</Label>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               )}
               {section.type === 'radio' && section.options && (
-                <div className="space-y-2">
+                <RadioGroup
+                  value={filters[section.id]}
+                  onValueChange={(value) => handleRadioChange(section.id, value)}
+                >
                   {section.options.map((option) => (
-                    <div className="flex items-center space-x-2" key={option.id}>
-                      <input
-                        type="radio"
-                        id={`${section.id}-${option.id}`}
-                        name={section.id}
-                        value={option.id}
-                        checked={filters[section.id] === option.id}
-                        onChange={() => handleRadioChange(section.id, option.id)}
-                        className="text-primary"
-                      />
+                    <div key={option.id} className="flex items-center space-x-2">
+                      <RadioGroupItem value={option.id} id={`${section.id}-${option.id}`} />
                       <Label htmlFor={`${section.id}-${option.id}`}>{option.label}</Label>
                     </div>
                   ))}
-                </div>
+                </RadioGroup>
               )}
               {section.type === 'range' && section.range && (
-                <div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <Slider
                     min={section.range.min}
                     max={section.range.max}
@@ -127,19 +165,23 @@ export function ProductFilter({ filterSections, onFilterChange }: ProductFilterP
                     className="mt-2"
                   />
                   <div className="flex justify-between mt-2">
-                    <span>{filters[section.id]?.[0] || section.range.min}</span>
-                    <span>Ksh {filters[section.id]?.[1] || section.range.max}</span>
+                    <span>${filters[section.id]?.[0] || section.range.min}</span>
+                    <span>${filters[section.id]?.[1] || section.range.max}</span>
                   </div>
-                </div>
+                </motion.div>
               )}
             </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
-      <div className="mt-4 space-x-2">
-        <Button onClick={applyFilters}>Apply Filters</Button>
-        <Button variant="outline" onClick={clearFilters}>Clear Filters</Button>
-      </div>
-    </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="mt-4 space-x-2"
+      >
+        <Button onClick={clearFilters}>Clear Filters</Button>
+      </motion.div>
+    </motion.div>
   )
 }

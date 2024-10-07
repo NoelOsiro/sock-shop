@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
+export const metadata = {
+  title: 'About Sock Shop',
+  description: 'Learn more about Sock Shop',
+}
+
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto">

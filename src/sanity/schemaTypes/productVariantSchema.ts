@@ -57,6 +57,15 @@ const productVariantSchema = {
           hotspot: true,
         },
       },
+      {
+        name: 'material',
+        title: 'Material',
+        type: 'string',
+        options: {
+          list: ['Cotton', 'Wool', 'Polyester', 'Silk', 'Nylon'],
+        }
+      }
+      
     ],
   };
 

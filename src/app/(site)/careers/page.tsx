@@ -1,6 +1,10 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
+export const metadata = {
+  title: 'Careers at Sock Shop',
+  description: 'Join the Sock Shop team',
+}
 export default function CareersPage() {
   const openPositions = [
     { title: "Sock Designer", department: "Design" },

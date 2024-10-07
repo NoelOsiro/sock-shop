@@ -3,6 +3,11 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 
+export const metadata = {
+  title: 'Contact Us',
+  description: 'Get in touch with Sock Shop',
+}
+
 export default function ContactPage() {
   return (
     <div className="max-w-2xl mx-auto">

@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react'
 import { client, urlFor } from '@/sanity/lib/client'
 import Image from 'next/image'
 import { AutoplayCarousel } from '@/components/AutoplayCarousel'
+import { getFeaturedProducts, getCarouselItems, getSaleProducts } from '@/lib/api'
 
 interface Product {
   _id: string
@@ -17,43 +18,6 @@ interface Product {
   imageUrl: string
 }
 
-interface CarouselItem {
-  _id: string
-  title: string
-  description: string
-  imageUrl: string
-  linkUrl: string
-}
-
-async function getFeaturedProducts(): Promise<Product[]> {
-  return await client.fetch(`*[_type == "product" && isFeatured == true][0...8]{
-    _id,
-    title,
-    slug,
-    price,
-    "imageUrl": images[0].asset->url
-  }`)
-}
-async function getSaleProducts(): Promise<Product[]> {
-  return await client.fetch(`*[_type == "product" && defined(salePrice)][0...4]{
-    _id,
-    name,
-    slug,
-    price,
-    salePrice,
-    "imageUrl": images[0].asset->url
-  }`)
-}
-
-async function getCarouselItems(): Promise<CarouselItem[]> {
-  return await client.fetch(`*[_type == "carouselItem"]{
-    _id,
-    title,
-    description,
-    "imageUrl": image.asset->url,
-    linkUrl
-  }`)
-}
 
 export default async function Home() {
   const featuredProducts = await getFeaturedProducts()

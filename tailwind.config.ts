@@ -18,6 +18,10 @@ const config = {
       },
     },
     extend: {
+      backgroundImage: {
+        'light-bg': "url('/images/socks/sock-isolated-white.png')",
+        'dark-bg': "url('/images/socks/sock-isolated-white.png')",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

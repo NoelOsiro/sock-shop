@@ -1,18 +1,22 @@
-"use client"
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Suspense } from 'react'
 import { ProductFilter } from "@/components/ProductFilter"
-import { client, urlFor } from '@/sanity/lib/client'
+import { AnimatedProductCard } from '@/components/ui/AnimatedProductCard'
+import { createFilters, FilterOptions, filterProducts, Product } from '@/lib/product'
+import { getWomensProducts } from '@/lib/api'
 
-interface Product {
-  _id: string
-  name: string
-  slug: { current: string }
-  price: number
-  imageUrl: string
+export const metadata = {
+  title: 'Women\'s Socks',
+  description: 'Shop our collection of women\'s socks. Find the perfect pair for any occasion.',
+  openGraph: {
+    images: [
+      {
+        url: '/images/socks/Women.jpeg',
+        width: 800,
+        height: 600,
+        alt: 'Women\'s socks',
+      },
+    ],
+  },
 }
 
 const filterSections = [
@@ -52,7 +56,7 @@ const filterSections = [
   {
     id: 'type',
     title: 'Type',
-    type: 'radio' as const,
+    type: 'checkbox' as const,
     options: [
       { id: 'crew', label: 'Crew' },
       { id: 'ankle', label: 'Ankle' },
@@ -72,64 +76,25 @@ const filterSections = [
     ],
   },
 ]
-export default function WomenPage() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+export default async function WomenPage({ searchParams }: { searchParams: { [key: string]: string } }) {
+  const products = await getWomensProducts()
 
-  const fetchProducts = async (filters: Record<string, any> = {}) => {
-    setIsLoading(true)
-    // Here you would typically construct a query based on the filters
-    // For now, we'll just fetch all men's products
-    const fetchedProducts = await client.fetch(`*[_type == "product" && category == "women"]{
-      _id,
-      name,
-      slug,
-      price,
-      "imageUrl": image.asset->url
-    }`)
-    setProducts(fetchedProducts)
-    setIsLoading(false)
-  }
-  useEffect(() => {
-    fetchProducts()
-  }, [])
+  const filters = createFilters(searchParams)
+  const filteredProducts = filterProducts(products, filters)
 
-  const handleFilterChange = (filters: Record<string, any>) => {
-    console.log('Filters applied:', filters)
-    fetchProducts(filters)
-  }
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Wom en&rsquo;s Socks</h1>
+      <h1 className="text-3xl font-bold mb-6">Women&rsquo;s Socks</h1>
       <div className="flex flex-col md:flex-row gap-8">
         <aside className="w-full md:w-1/4">
-          <ProductFilter
-            filterSections={filterSections}
-            onFilterChange={handleFilterChange}
-          />
+        <Suspense fallback={<div>Loading filters...</div>}>
+            <ProductFilter filterSections={filterSections} />
+          </Suspense>
         </aside>
         <main className="w-full md:w-3/4">
-          {isLoading ? (
-            <div>Loading products...</div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {products.map((product) => (
-                <Card key={product._id}>
-                  <CardHeader>
-                    <CardTitle>{product.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                  <Image src={urlFor(product.imageUrl).width(200).height(200).url()} alt={product.name} className="w-full h-48 object-cover mb-4 rounded-md" width={100} height={192} />                    <p className="text-2xl font-bold">${product.price.toFixed(2)}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Link href={`/product/${product.slug.current}`} passHref>
-                      <Button className="w-full">View Details</Button>
-                    </Link>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
+        {filteredProducts.map((product: Product, index: number) => (
+              <AnimatedProductCard key={product._id} product={product} index={index} />
+            ))}
         </main>
       </div>
     </div>
