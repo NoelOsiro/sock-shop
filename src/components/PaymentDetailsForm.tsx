@@ -14,7 +14,7 @@ interface PaymentDetailsFormProps {
 
 const PaymentDetailsForm: React.FC<PaymentDetailsFormProps> = ({ paymentMethod, total }) => {
     const handlePayment = () => {
-        alert('Payment Successful')
+        window.alert('Payment Successful')
     }
     return (
         <div>

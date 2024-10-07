@@ -9,7 +9,7 @@ export default function ReturnsPage() {
       </p>
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1">
-          <AccordionTrigger>Return Policy</AccordionTrigger>
+          <AccordionTrigger data-testid="return-policy">Return Policy</AccordionTrigger>
           <AccordionContent>
             You may return any unworn, unwashed items within 30 days of receipt for a full refund of the purchase price (excluding shipping costs).
           </AccordionContent>

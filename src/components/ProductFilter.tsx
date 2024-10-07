@@ -32,7 +32,7 @@ interface FilterSection {
   }
 }
 
-interface ProductFilterProps {
+export interface ProductFilterProps {
   filterSections: FilterSection[]
 }
 

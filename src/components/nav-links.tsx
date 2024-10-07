@@ -5,6 +5,7 @@ export function NavLinks() {
     <>
       <Link 
         href="/men" 
+        data-testid="men-link"
         className="block px-3 py-2 font-medium text-lg rounded-md transition-colors duration-200 ease-in-out
                    hover:bg-primary hover:text-primary-foreground
                    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
@@ -14,6 +15,7 @@ export function NavLinks() {
       </Link>
       <Link 
         href="/women" 
+        data-testid="women-link"
         className="block px-3 py-2 font-medium text-lg rounded-md transition-colors duration-200 ease-in-out
                    hover:bg-primary hover:text-primary-foreground
                    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
@@ -23,6 +25,7 @@ export function NavLinks() {
       </Link>
       <Link 
         href="/children" 
+        data-testid="children-link"
         className="block px-3 py-2 font-medium text-lg rounded-md transition-colors duration-200 ease-in-out
                    hover:bg-primary hover:text-primary-foreground
                    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
