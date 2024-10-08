@@ -1,0 +1,48 @@
+[
+    {
+        "_id": "1",
+        "price": 20,
+        "isOnSale": true,
+        "variants": [
+            {
+                "size": "M",
+                "color": "red",
+                "stock": 10,
+                "type": "casual",
+                "material": "cotton",
+                "title": "Red Casual Socks",
+                "price": 20
+            }
+        ],
+        "title": "Red Casual Socks",
+        "description": "A pair of comfortable red socks",
+        "slug": {
+            "current": "red-casual-socks"
+        },
+        "imageUrl": "/images/socks/red-casual-socks.jpg",
+        "salePrice": 15
+    },
+    {
+        "_id": "2",
+        "price": 30,
+        "isOnSale": false,
+        "variants": [
+            {
+                "size": "L",
+                "color": "blue",
+                "stock": 5,
+                "type": "formal",
+                "material": "polyester",
+                "title": "Blue Formal Socks",
+                "price": 30
+            }
+        ],
+        "title": "Blue Formal Socks",
+        "description": "A pair of formal blue socks",
+        "slug": {
+            "current": "blue-formal-socks"
+        },
+        "imageUrl": "/images/socks/blue-formal-socks.jpg",
+        "salePrice": null
+    }
+]

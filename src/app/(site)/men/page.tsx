@@ -1,9 +1,10 @@
 import { Suspense } from 'react'
 import { ProductFilter } from "@/components/ProductFilter"
-import { AnimatedProductCard } from '@/components/ui/AnimatedProductCard'
+
 import { createFilters,filterProducts, Product } from '@/lib/product'
 import { getMensProducts } from '@/lib/api'
 import { filterSections } from '@/lib/filters'
+import AnimatedProductCard from '@/components/ui/AnimatedProductCard'
 
 export const metadata = {
   title: 'Men\'s Socks',
@@ -22,7 +23,7 @@ export const metadata = {
 
 
 
-export default async function MenPage({ searchParams }: { searchParams: { [key: string]: string } }) {
+export default async function MenPage({ searchParams = {} }: { searchParams?: { [key: string]: string } }) {
   const products = await getMensProducts()
   
   const filters = createFilters(searchParams)
@@ -40,7 +41,7 @@ export default async function MenPage({ searchParams }: { searchParams: { [key: 
         <main className="w-full md:w-3/4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {filteredProducts.map((product: Product, index: number) => (
-              <AnimatedProductCard key={product._id} product={product} index={index} />
+              <AnimatedProductCard key={product._id} product={product} index={index}/>
             ))}
           </div>
         </main>

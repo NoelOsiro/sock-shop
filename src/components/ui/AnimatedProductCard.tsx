@@ -5,34 +5,21 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Product } from '@/lib/product'
 
-interface Product {
-  _id: string
-  title: string
-  slug: { current: string }
-  price: number
-  imageUrl: string
-  variants: Array<{
-    title: string
-    size: string
-    color: string
-    type: string
-    price: number
-    stock: number
-  }>
-}
 
 interface AnimatedProductCardProps {
   product: Product
   index: number
 }
 
-export function AnimatedProductCard({ product, index }: AnimatedProductCardProps) {
+export default function AnimatedProductCard({ product, index }: AnimatedProductCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
+      id='animated-product-card'
     >
       <Card className="h-full flex flex-col">
         <CardHeader>

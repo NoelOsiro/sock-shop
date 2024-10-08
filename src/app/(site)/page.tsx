@@ -2,21 +2,13 @@ import Link from 'next/link'
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { CarouselItem} from "@/components/ui/carousel"
 import { ArrowRight } from 'lucide-react'
-import { client, urlFor } from '@/sanity/lib/client'
+import { urlFor } from '@/sanity/lib/client'
 import Image from 'next/image'
 import { AutoplayCarousel } from '@/components/AutoplayCarousel'
 import { getFeaturedProducts, getCarouselItems, getSaleProducts } from '@/lib/api'
 
-interface Product {
-  _id: string
-  title: string
-  slug: { current: string }
-  price: number
-  salePrice?: number
-  imageUrl: string
-}
 
 
 export default async function Home() {

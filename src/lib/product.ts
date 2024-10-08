@@ -49,6 +49,20 @@ export function createFilters(searchParams: { [key: string]: string | string[] |
     let minPrice: number | undefined;
     let maxPrice: number | undefined;
 
+    // Check if searchParams is an empty object
+    if (Object.keys(searchParams).length === 0) {
+        return {
+            minPrice,
+            maxPrice,
+            onSale: undefined,
+            inStock: undefined,
+            size: undefined,
+            color: undefined,
+            type: undefined,
+            material: undefined,
+        };
+    }
+
     // Handle the price range, ensuring NaN values are handled
     if (typeof searchParams.price === 'string') {
         const priceRange = searchParams.price.split(',');
@@ -83,15 +97,33 @@ export function createFilters(searchParams: { [key: string]: string | string[] |
 
 export function filterProducts(products: Product[], filters: FilterOptions): Product[] {
     return products.filter(product => {
-        if (filters.minPrice && product.price < filters.minPrice) return false
-        if (filters.maxPrice && product.price > filters.maxPrice) return false
-        if (filters.onSale && !product.isOnSale) return false
-        if (filters.inStock && !product.variants.some(v => v.stock > 0)) return false
+        // Early exit if filters are all undefined
+        if (!filters) return true; // No filters applied, return all products
+        
+        // Filter by minimum price
+        if (filters.minPrice !== undefined && product.price < filters.minPrice) return false;
+        
+        // Filter by maximum price
+        if (filters.maxPrice !== undefined && product.price > filters.maxPrice) return false;
+
+        // Filter by sale status
+        if (filters.onSale !== undefined && filters.onSale && !product.isOnSale) return false;
+
+        // Filter by stock availability
+        if (filters.inStock !== undefined && filters.inStock && !product.variants.some(v => v.stock > 0)) return false;
+
+        // Filter by size
         if (filters.size && !product.variants.some(v => filters.size!.includes(v.size.split(' ')[0]))) return false
-        if (filters.color && !product.variants.some(v => filters.color!.includes(v.color.split(' ')[0]))) return false
-        if (filters.type && !product.variants.some(v => filters.type!.toLowerCase().includes(v.type.toLowerCase()))) return false
-        // Assuming material is a property of the product, not the variant
-        if (filters.material && !product.variants.some(v => v.material?.toLowerCase().includes(filters.material!.toLowerCase()))) return false
-        return true
-    })
+
+        // Filter by color
+        if (filters.color && !product.variants.some(v => filters.color!.includes(v.color.split(' ')[0]))) return false;
+
+        // Filter by type
+        if (filters.type && !product.variants.some(v => filters.type!.toLowerCase() === v.type.toLowerCase())) return false;
+
+        // Filter by material
+        if (filters.material && !product.variants.some(v => v.material?.toLowerCase().includes(filters.material!.toLowerCase()))) return false;
+
+        return true; // Product passes all filters
+    });
 }

@@ -1,7 +1,6 @@
 import { CartIcon } from '@/components/CartIcon';
 import { useCart } from '../contexts/CatrContext';
 import { render, screen } from '@testing-library/react';
-
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 

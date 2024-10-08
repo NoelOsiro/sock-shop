@@ -110,6 +110,7 @@ export function ProductFilter({ filterSections }: ProductFilterProps) {
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
+      id='product-filter'
       className="w-full max-w-xs bg-white dark:text-black p-4 rounded-lg shadow-lg space-y-4"
     >
       <Accordion type="multiple" className="w-full">

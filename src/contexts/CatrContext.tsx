@@ -65,18 +65,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateQuantity = (id: string, quantity: number) => {
     setCart(prevCart =>
-      prevCart.map(item =>
-        item.id === id ? { ...item, quantity: quantity } : item
-      )
-    )
-  }
+      prevCart
+        .map(item => (item.id === id ? { ...item, quantity: quantity } : item))
+        .filter(item => item.quantity > 0) // Remove item if quantity is 0
+    );
+  };
+  
 
   const clearCart = () => {
     setCart([])
   }
 
+  const value = { cart, addToCart, removeFromCart, updateQuantity, clearCart }
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   )

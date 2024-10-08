@@ -6,6 +6,7 @@ const mockProducts: Product[] = [
         title: 'Product 1',
         slug: { current: 'product-1' },
         price: 50,
+        description: 'Product 1 description',
         imageUrl: 'image1.jpg',
         variants: [
             { title: 'Variant 1', price: 50, stock: 5, size: 'M', color: 'red', type: 'socks', material: 'cotton' },
@@ -19,6 +20,7 @@ const mockProducts: Product[] = [
         title: 'Product 2',
         slug: { current: 'product-2' },
         price: 150,
+        description: 'Product 2 description',
         imageUrl: 'image2.jpg',
         variants: [
             { title: 'Variant 1', price: 150, stock: 0, size: 'S', color: 'black', type: 'hat', material: 'wool' }
